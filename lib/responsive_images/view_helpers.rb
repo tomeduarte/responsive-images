@@ -9,7 +9,10 @@ module ResponsiveImages
     
     
     # Create a image tag with our responsive image data attributes
-    def responsive_image_tag image, options={}
+    def responsive_image_tag image = nil, options={}
+      # is it worth to process?
+      return if image == nil
+
       # Merge any options passed with the configured options
       sizes = ResponsiveImages.options.deep_merge(options)  
       # Let's create a hash of the alternative options for our data attributes    
@@ -21,7 +24,10 @@ module ResponsiveImages
     end
     
     
-    def responsive_background_image image, options={}
+    def responsive_background_image image = nil, options={}
+      # is it worth to process?
+      return if image == nil
+
       # Merge any options passed with the configured options
       sizes = ResponsiveImages.options.deep_merge(options)
       data_hash = { style: "background-image: url(#{src_path(image, sizes)})" }.merge(alternative_sizes(image, sizes)).merge(options)
