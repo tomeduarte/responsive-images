@@ -2,6 +2,7 @@ module ResponsiveImages
   module Config
     
     VALID_OPTION_KEYS = [
+      :authorized_modifiers,
       :default,
       :sizes
     ]
