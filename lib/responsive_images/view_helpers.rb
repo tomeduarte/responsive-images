@@ -88,7 +88,7 @@ module ResponsiveImages
               data_sizes[key] = image.url
             else
               # add only if it's an existent version
-              data_sizes[key] = image.url(version) if image.send(version).file.exists?
+              data_sizes[key] = image.url(version) # if image.send(version).file.exists?
             end
           rescue ArgumentError # unexistent version
           end
