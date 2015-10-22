@@ -69,7 +69,7 @@ module ResponsiveImages
         if value.present?
           case size
           when :default
-            version = sizes[:sizes][identifiers[:desktop]]r
+            version = sizes[:sizes][identifiers[:desktop]]
           when :desktop
             version = sizes[:sizes][identifiers[:desktop]]
           when :tablet
