@@ -47,9 +47,9 @@ module ResponsiveImages
         when :desktop
           image_src = sizes[:default] == :default ? image.url : image.url(sizes[:sizes][identifiers[:desktop]])
         when :tablet
-          image_src = sizes[:sizes][tablet_identifier].present? ? image.url(sizes[:sizes][identifiers[:tablet]]) : image.url(sizes[:default])
+          image_src = sizes[:sizes][identifiers[:tablet]].present? ? image.url(sizes[:sizes][identifiers[:tablet]]) : image.url(sizes[:default])
         when :mobile
-          image_src = sizes[:sizes][mobile_identifier].present? ? image.url(sizes[:sizes][identifiers[:mobile]]) : image.url(sizes[:default])
+          image_src = sizes[:sizes][identifiers[:mobile]].present? ? image.url(sizes[:sizes][identifiers[:mobile]]) : image.url(sizes[:default])
         end
       rescue ArgumentError # unexistent version
         image_src = sizes[:default] == :default ? image.url : image.url(:default)
