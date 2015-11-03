@@ -4,6 +4,9 @@ module ResponsiveImages
     VALID_OPTION_KEYS = [
       :authorized_modifiers,
       :default,
+      :lazy_load,
+      :lazy_load_default,
+      :quality,
       :sizes
     ]
     

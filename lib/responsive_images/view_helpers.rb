@@ -13,14 +13,10 @@ module ResponsiveImages
       # is it worth to process?
       return if image == nil
 
-      # Merge any options passed with the configured options
-      sizes = ResponsiveImages.options.deep_merge(options)  
-      # Let's create a hash of the alternative options for our data attributes    
-      data_sizes = alternative_sizes(image, sizes)
-      # Get the image source
-      image_src = src_path(image, sizes)      
+      image_src, data_sizes = setup(image, options)
+
       # Return the image tag with our responsive data attributes
-      return image_tag image_src, data_sizes.merge(options)
+      return image_tag image_src, data_sizes
     end
     
     
@@ -28,12 +24,41 @@ module ResponsiveImages
       # is it worth to process?
       return if image == nil
 
-      # Merge any options passed with the configured options
-      sizes = ResponsiveImages.options.deep_merge(options)
-      data_hash = { style: "background-image: url(#{src_path(image, sizes)})" }.merge(alternative_sizes(image, sizes)).merge(options)
+      image_src, data_sizes = setup(image, options)
+
+      data_hash = { style: "background-image: url(#{image_src})" }.merge(data_sizes)
     end
   
     
+    private
+
+    def setup image, options
+      # Merge any options passed with the configured options
+      sizes = ResponsiveImages.options.deep_merge(options)
+
+      # Let's create a hash of the alternative options for our data attributes
+      data_sizes = alternative_sizes(image, sizes).merge(options)
+
+      # image url
+      image_src = src_path(image, sizes)
+
+      # if lazy load is enabled for the gem
+      if ResponsiveImages.options[:lazy_load]
+        # do we have classes for this image?
+        if options[:class]
+          # check if this image is to be lazy loaded
+          lazy_load = options[:class].split(' ').include? 'lazy'
+
+          if lazy_load
+            data_sizes['data-original'] = image_src
+            image_src = ResponsiveImages.options[:lazy_load_default] ? ResponsiveImages.options[:lazy_load_default] : ''
+          end
+        end
+      end
+
+      return image_src, data_sizes
+    end
+
     # Let's identify the default image size for the image tag. If it's a desktop then our
     # default src attribute should be desktop (or default) but if it's a mobile or table
     # then we should set the src attribute to the mobile or tablet image
@@ -103,10 +128,11 @@ module ResponsiveImages
     # for desktop, tablet and mobile
     def detect_device_identifiers options
 
+      quality_identifier = "_#{ResponsiveImages.options[:quality]}" if ResponsiveImages.options[:quality]
       identifiers = {
-        :desktop => :desktop,
-        :tablet  => :tablet,
-        :mobile  => :mobile
+        :desktop => "desktop" + quality_identifier,
+        :tablet  => "tablet" + quality_identifier,
+        :mobile  => "mobile" + quality_identifier
       }
 
       if options[:class]

@@ -71,17 +71,24 @@
       var data_attribute = "data-" + key.replace("_", "-").replace('size', 'src');      
       responsive_images.each(function(index, item) {
         // Let's make sure the data attribute exists
-        if ( $(item).attr(data_attribute) != null ) {        
-          // If the item is a div, let's set the background image
-          if ( $(item).is('div') ) {
-            $(item).css({
-              "background-image" : 'url("' + $(item).attr(data_attribute) + '")'
-            });
+        if ( $(item).attr(data_attribute) != null ) {
+
+          // check if lazy loaded
+          if( $(item).hasClass('lazy') ) {
+            console.log('lazy load detected');
+            $(item).attr('data-original', $(item).attr(data_attribute));
+          } else {
+            // If the item is a div, let's set the background image
+            if ( $(item).is('div') ) {
+              $(item).css({
+                "background-image" : 'url("' + $(item).attr(data_attribute) + '")'
+              });
+            }
+            // If it's an image, let's just replace the source
+            else if ( $(item).is('img') ) {
+              $(item).attr('src', $(item).attr(data_attribute));
+            };
           }
-          // If it's an image, let's just replace the source
-          else if ( $(item).is('img') ) {
-            $(item).attr('src', $(item).attr(data_attribute));
-          };
         };
       });
     };
