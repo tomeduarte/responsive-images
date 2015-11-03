@@ -75,7 +75,6 @@
 
           // check if lazy loaded
           if( $(item).hasClass('lazy') ) {
-            console.log('lazy load detected');
             $(item).attr('data-original', $(item).attr(data_attribute));
           } else {
             // If the item is a div, let's set the background image
