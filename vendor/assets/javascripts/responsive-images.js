@@ -74,7 +74,7 @@
         if ( $(item).attr(data_attribute) != null ) {
 
           // check if lazy loaded
-          if( $(item).hasClass('lazy') ) {
+          if( $(item).hasClass('responsive-lazy') ) {
             $(item).attr('data-original', $(item).attr(data_attribute));
           } else {
             // If the item is a div, let's set the background image

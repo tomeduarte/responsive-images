@@ -47,10 +47,11 @@ module ResponsiveImages
         # do we have classes for this image?
         if options[:class]
           # check if this image is to be lazy loaded
-          lazy_load = options[:class].split(' ').include? 'lazy'
+          lazy_load = options[:class].split(' ').include? 'responsive-lazy' 
 
           if lazy_load
             data_sizes['data-original'] = image_src
+            data_sizes['data-background'] = image_src
             image_src = ResponsiveImages.options[:lazy_load_default] ? ResponsiveImages.options[:lazy_load_default] : ''
           end
         end
