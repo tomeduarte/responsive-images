@@ -89,38 +89,12 @@ module ResponsiveImages
       # get device type identifiers
       identifiers = detect_device_identifiers(sizes)
 
-      # update version accordingly
-      sizes[:sizes].each do |size, value|
-        if value.present?
-          case size
-          when :default
-            version = sizes[:sizes][identifiers[:desktop]]
-          when :desktop
-            version = sizes[:sizes][identifiers[:desktop]]
-          when :tablet
-            version = sizes[:sizes][identifiers[:tablet]]
-          when :mobile
-            version = sizes[:sizes][identifiers[:mobile]]
-          else
-            version = value
-          end
-
-          begin
-            key = "data-#{size}-src"
-
-            # add it only if the file exists
-            if version == :default
-              data_sizes[key] = image.url
-            else
-              # add only if it's an existent version
-              data_sizes[key] = image.url(version) # if image.send(version).file.exists?
-            end
-          rescue ArgumentError # unexistent version
-          end
-        else
-          false
-        end
+      # generate URLs for each device
+      %w(desktop tablet mobile).each do |device|
+        key = "data-#{device}-src"
+        data_sizes[key] = image.url sizes[:sizes][identifiers[device.to_sym]]
       end
+
       data_sizes
     end
 
@@ -128,7 +102,7 @@ module ResponsiveImages
     # for desktop, tablet and mobile
     def detect_device_identifiers options
 
-      quality_identifier = "_#{ResponsiveImages.options[:quality]}" if ResponsiveImages.options[:quality]
+      quality_identifier = ResponsiveImages.options[:quality].nil? ? '' : "-#{ResponsiveImages.options[:quality]}"
       identifiers = {
         :desktop => "desktop" + quality_identifier,
         :tablet  => "tablet" + quality_identifier,
@@ -136,7 +110,11 @@ module ResponsiveImages
       }
 
       if options[:class]
-        modifiers = options[:class].split(' ').select { |css_class| ResponsiveImages.options[:authorized_modifiers].include?(css_class) }
+        if ResponsiveImages.options[:authorized_modifiers].nil?
+          modifiers = [ ]
+        else
+          modifiers = options[:class].split(' ').select { |css_class| ResponsiveImages.options[:authorized_modifiers].include?(css_class) }
+        end
 
         unless modifiers.empty?
           identifiers[:desktop]  = (modifiers.first + "-" + identifiers[:desktop].to_s).to_sym
